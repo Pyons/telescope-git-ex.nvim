@@ -22,22 +22,21 @@ git_ex_b.compare = function(opts)
     local render_file = function(prompt_bufnr)
         actions.close(prompt_bufnr)
         vim.api.nvim_command('botright vsplit new')
-        local list = {}
         local selection = action_state.get_selected_entry()
-        local stdout, ret, stderr = utils.get_os_command_output({
-            'git', 'show',  selection.value .. ':' .. file_name
+        local git_file, ret, err = utils.get_os_command_output({
+            'git', 'ls-files', '--full-name', file_name
+        }, cwd)
+        local contents, ret, stderr = utils.get_os_command_output({
+            'git', 'show',  selection.value .. ':' .. git_file[1]
         }, cwd)
         local buf = vim.api.nvim_get_current_buf()
-        vim.api.nvim_buf_set_name(buf, 'file #' .. buf)
+        vim.api.nvim_buf_set_name(buf, '#' .. selection.value .. ' ' .. buf)
         vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
         vim.api.nvim_buf_set_option(buf, 'swapfile', false)
         vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
         vim.api.nvim_buf_set_option(buf, 'filetype', 'git_ex_compare_file')
         vim.api.nvim_buf_set_option(buf, 'syntax', syntax)
-        for _, v in pairs(stdout) do
-            table.insert(list, v)
-        end
-        vim.api.nvim_buf_set_lines(buf, 0, -1, false, list)
+        vim.api.nvim_buf_set_lines(buf, 0, -1, false, contents)
     end
     nopts.file_name = file_name
     pickers.new(opts, {
