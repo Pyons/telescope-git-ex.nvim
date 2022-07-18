@@ -13,6 +13,7 @@ local git_ex_b = {}
 git_ex_b.compare = function(opts)
     local buf = vim.api.nvim_get_current_buf()
     local syntax = vim.api.nvim_buf_get_option(buf, 'syntax')
+    local filetype = vim.api.nvim_buf_get_option(buf, 'filetype')
     local cwd = opts.cwd
     local file_name = vim.fn.expand('%')
     local nopts = opts
@@ -34,7 +35,7 @@ git_ex_b.compare = function(opts)
         vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
         vim.api.nvim_buf_set_option(buf, 'swapfile', false)
         vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
-        vim.api.nvim_buf_set_option(buf, 'filetype', 'git_ex_compare_file')
+        vim.api.nvim_buf_set_option(buf, 'filetype', filetype)
         vim.api.nvim_buf_set_option(buf, 'syntax', syntax)
         vim.api.nvim_buf_set_lines(buf, 0, -1, false, contents)
     end
