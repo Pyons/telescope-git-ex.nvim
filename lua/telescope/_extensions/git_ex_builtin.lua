@@ -22,6 +22,7 @@ git_ex_b.compare = function(opts)
     }, opts.cwd)
     local render_file = function(prompt_bufnr)
         actions.close(prompt_bufnr)
+        vim.api.nvim_command('diffthis')
         vim.api.nvim_command('botright vsplit new')
         local selection = action_state.get_selected_entry()
         local git_file, ret, err = utils.get_os_command_output({
@@ -38,6 +39,7 @@ git_ex_b.compare = function(opts)
         vim.api.nvim_buf_set_option(buf, 'filetype', filetype)
         vim.api.nvim_buf_set_option(buf, 'syntax', syntax)
         vim.api.nvim_buf_set_lines(buf, 0, -1, false, contents)
+        vim.api.nvim_command('diffthis')
     end
     nopts.file_name = file_name
     pickers.new(opts, {
